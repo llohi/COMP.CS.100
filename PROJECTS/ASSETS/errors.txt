@@ -1,0 +1,7 @@
+Test case 06 / Testitapaus 06
+
+Input file has x-coordinate which
+is outside the allowed range.
+Program output / Ohjelman tulosteet 	Expected output / Oikeat tulosteet
+
+J0	  ->  Error␣in␣ship␣coordinates!

@@ -8,7 +8,7 @@ Opiskelijanumero: 050800360
 def read_user():
     """
     read user input
-    seperate all words into a list
+    separate all words into a list
     return list of words and list of rows
     """
 
@@ -60,7 +60,7 @@ def calculate_rows(text, length):
         rows = all_chars // length
 
     else:
-        rows = (all_chars // length) + 100  # 5, just incase words don't fit
+        rows = (all_chars // length) + 100  # 5, just encase words don't fit
 
     return rows
 
@@ -127,7 +127,6 @@ def even_text(rows, length):
     for row in rows:
 
         # variable for all room that must be filled
-        empty_space = 0
         chars = 0
 
         # get rid of space after last word of the row
@@ -137,8 +136,8 @@ def even_text(rows, length):
                 rows[row][-1] = rows[row][-1].strip()
 
         except IndexError:
-            str = "*"
-            print(f"{str * 10}\tINDEX ERROR\t{str * 10}")
+            s = "*"
+            print(f"{s * 10}\tINDEX ERROR\t{s * 10}")
             print(f"{row}:", end="\t")
             print(rows[row])
             return
@@ -183,8 +182,8 @@ def even_text(rows, length):
 
                     except IndexError:
 
-                        str = "*"
-                        print(f"{str * 10}\tINDEX ERROR\t{str * 10}")
+                        s = "*"
+                        print(f"{s * 10}\tINDEX ERROR\t{s * 10}")
                         print(f"{row}:", end="\t")
                         print(rows[row])
                         return

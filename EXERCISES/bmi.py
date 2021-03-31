@@ -42,7 +42,7 @@ class Userinterface:
         except ValueError:
 
             #  print error msg and clear fields
-            self.__result_text['text'] = 'Error: height and weight must be numbers.'
+            self.__explanation_text['text'] = 'Error: height and weight must be numbers.'
             self.reset_fields()
             return
 
@@ -54,13 +54,13 @@ class Userinterface:
             else:
 
                 #  print error msg and clear fields
-                self.__result_text['text'] = 'Error: height and weight must be positive.'
+                self.__explanation_text['text'] = 'Error: height and weight must be positive.'
                 self.reset_fields()
                 return
         else:
 
             #  print error msg and clear fields
-            self.__result_text['text'] = 'Error: height and weight must be positive.'
+            self.__explanation_text['text'] = 'Error: height and weight must be positive.'
             self.reset_fields()
             return
 

@@ -1,7 +1,7 @@
 """
-COMP.CS.100 Ohjelmointi 1 / Programming 1
-
-Body Mass Index template
+COMP.CS.100 Body Mass Index
+Tekijä: Joose Lohi
+Opiskelijanumero: 050800360
 """
 
 from tkinter import *
@@ -9,84 +9,94 @@ from tkinter import *
 
 class Userinterface:
 
+
     def __init__(self):
+
+        #  main window
         self.__mainwindow = Tk()
 
-        # TODO: Create an Entry-component for the weight.
-        self.__weight_value = None
+        #  attributes
+        self.__weight_value = Entry(self.__mainwindow)
+        self.__height_value = Entry(self.__mainwindow)
+        self.__calculate_button = Button(self.__mainwindow, text='Calculate', background='green',foreground='white' , command=self.calculate_BMI)
+        self.__result_text = Label(self.__mainwindow, text='')
+        self.__explanation_text = Label(self.__mainwindow, text='')
+        self.__stop_button = Button(self.__mainwindow, text='Stop', background='red', foreground='white', command=self.stop)
 
-        # TODO: Create an Entry-component for the height.
-        self.__height_value = None
+        #  grid
+        self.__weight_value.grid(row=0, column=0)
+        self.__height_value.grid(row=0, column=1)
+        self.__calculate_button.grid(row=0, column=2)
+        self.__stop_button.grid(row=1, column=0, columnspan=3)
+        self.__result_text.grid(row=2, column=0)
+        self.__explanation_text.grid(row=3, column=0)
 
-        # TODO: Create a Button that will call the calculate_BMI-method.
-        # TODO: Change the colour of the Button to something else than
-        #       the default colour.
-        self.__calculate_button = None
 
-        # TODO: Create a Label that will show the decimal value of the BMI
-        #      after it has been calculated.
-        self.__result_text = None
-
-        # TODO: Create a Label that will show a verbal description of the BMI
-        #       after the BMI has been calculated.
-        self.__explanation_text = None
-
-        # TODO: Create a button that will call the stop-method.
-        self.__stop_button = None
-
-        # TODO: Place the components in the GUI as you wish.
-        # If you read the Gaddis book, you can use pack here instead of grid!
-        self.__weight_value.grid()
-        self.__height_value.grid()
-        self.__calculate_button.grid()
-        self.__stop_button.grid()
-        self.__result_text.grid()
-        self.__explanation_text.grid()
-
-    # TODO: Implement this method.
     def calculate_BMI(self):
-        """
-        Part b) This method calculates the BMI of the user and
-        displays it. First the method will get the values of
-        height and weight from the GUI components
-        self.__height_value and self.__weight_value.  Then the
-        method will calculate the value of the BMI and show it in
-        the element self.__result_text.
 
-        Part e) Last, the method will display a verbal
-        description of the BMI in the element
-        self.__explanation_text.
-        """
+        # test for ValueError
+        try:
+            weight = float(self.__weight_value.get())
+            height = float(self.__height_value.get()) * 0.01
 
-        pass
+        except ValueError:
 
-    # TODO: Implement this method.
+            #  print error msg and clear fields
+            self.__result_text['text'] = 'Error: height and weight must be numbers.'
+            self.reset_fields()
+            return
+
+        # test that nums are positive
+        if weight > 0:
+            if height > 0:
+                pass
+
+            else:
+
+                #  print error msg and clear fields
+                self.__result_text['text'] = 'Error: height and weight must be positive.'
+                self.reset_fields()
+                return
+        else:
+
+            #  print error msg and clear fields
+            self.__result_text['text'] = 'Error: height and weight must be positive.'
+            self.reset_fields()
+            return
+
+        #  bmi  =  weight  /  height^2
+        bmi = weight / height**2
+        self.__result_text['text'] = f'{bmi:.2f}'
+
+        # execute explanation text
+        if bmi < 18.5:
+            self.__explanation_text['text'] = 'You are underweight.'
+
+        elif 18.5 <= bmi <= 25:
+            self.__explanation_text['text'] = 'Your weight is normal.'
+
+        else:
+            self.__explanation_text['text'] = 'You are overweight.'
+
+
     def reset_fields(self):
-        """
-        In error situations this method will zeroize the elements
-        self.__result_text, self.__height_value, and self.__weight_value.
-        """
 
-        pass
+        self.__weight_value.delete(0, 'end')
+        self.__height_value.delete(0, 'end')
+
 
     def stop(self):
-        """
-        Ends the execution of the program.
-        """
 
         self.__mainwindow.destroy()
 
+    #  initialize event loop
     def start(self):
-        """
-        Starts the mainloop.
-        """
+
         self.__mainwindow.mainloop()
 
 
 def main():
-    # Notice how the user interface can be created and
-    # started separately.  Don't change this arrangement,
-    # or automatic tests will fail.
+
     ui = Userinterface()
     ui.start()
 

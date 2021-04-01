@@ -11,6 +11,7 @@ the game ends. To win, the player must answer all 12 questions correctly.
 
 
 import os
+import random
 from tkinter import *
 
 
@@ -20,41 +21,140 @@ class UserInterface:
     def __init__(self):
 
         #  create root window with size and title
-        self.__root = Tk()
-        self.__root.geometry('1280x720')
-        self.__root.title('Who Wants to Be a Millionaire?')
+        self.root = Tk()
+        self.root.geometry('1030x720')
+        self.root.title('Who Wants to Be a Millionaire?')
 
-        #  set background image
-        self.__background_image = PhotoImage(file=f'{path}/background.png')
-        self.__background_label = Label(self.__root, image=self.__background_image)
-        self.__background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        #  set background
+        background = Label(bg='#FFF', width=1280, height=720)
+        background.place(x=0, y=0)
 
-        #  frame for prizes                                520 / 13 = 20
-        self.__prize_frame = Frame(self.__root, width=175, height=520, background='#ffffff', bd=5, relief=RIDGE)
-        self.__prize_frame.grid(row=0, column=0, padx=50, pady=120)
+        #  set header
+        self.header = Label(text='Who Wants to Be a Millionaire?', bg='#FFF')
+        self.header.config(font=('Serif', 30))
 
+        #  frame for prizes
+        self.left_frame = Frame(self.root, width=175, height=520, bg='#FFF', bd=5, relief=RIDGE)
+
+        #  frame for questions and answers:
+        #   - START button
+        #   - frame for question string
+        self.middle_frame = Frame(self.root, width=600, height=520, bg='#FFF', bd=5, relief=RIDGE)
+        self.start_button = Button(self.middle_frame, text='START', bg='green', fg='white', padx=20, pady=20, bd=5, relief=RIDGE, command=self.ask_questions)
+        self.question_frame = Frame(self.middle_frame, width=500, height=100, bg='#FFF')
+
+        #  frame for right sidebar:
+        #   - prize count
+        #   - operators (50/50, ask the audience)
+        #   - QUIT button
+        self.right_frame = Frame(self.root, width=100, height=520, bg='#FFF', bd=5, relief=RIDGE)
+        self.count = 0
+        self.count_label = Label(self.right_frame, text=f'CORRECT:\n{self.count}', bg='#FFF')
+        self.ff = Button(self.right_frame, text='50/50', padx=27, pady=15)
+        self.ask = Button(self.right_frame, text='ASK THE\nAUDIENCE', pady=10)
+
+        #  QUIT button
+        self.quit = Button(self.right_frame, text='QUIT', bg='red', fg='white', padx=26, pady=15, bd=5, relief=RIDGE, command=self.root.quit)
+
+
+        #  grid system:
+        #                       HEADER
+        #  LEFT (prizes)    MIDDLE (questions)    RIGHT(buttons)
+
+        self.header.grid(row=0, column=0, columnspan=3, pady=20)
+
+        #  LEFT
+
+        self.left_frame.grid(row=1, column=0, padx=20, pady=20)
+        self.left_frame.grid_propagate(0)  # freeze size of frame
         # question/prize
-        Label(self.__prize_frame, text='QUESTION', background='#FFFFFF').grid(row=0, column=0, padx=10, pady=10)
-        Label(self.__prize_frame, text='PRIZE', background='#FFFFFF').grid(row=0, column=1, padx=10, pady=10)
+        Label(self.left_frame, text='QUESTION', bg='#FFF').grid(row=0, column=0, padx=3, pady=10)
+        Label(self.left_frame, text='PRIZE', bg='#FFF').grid(row=0, column=1, padx=3, pady=10)
         # label prizes
         i = 1
         for p in PRIZES:
-            Label(self.__prize_frame, text=p, background='#FFFFFF').grid(row=i, column=0, padx=10, pady=10)
-            Label(self.__prize_frame, text=f'{PRIZES[p]} $', background='#FFFFFF').grid(row=i, column=1, padx=10, pady=10)
+            Label(self.left_frame, text=p, bg='#FFF').grid(row=i, column=0, pady=9)
+            Label(self.left_frame, text=f'{PRIZES[p]} $', bg='#FFF').grid(row=i, column=1)
             i += 1
 
+        #  MIDDLE
 
-        #  frame for q&a
-        self.__question_frame = Frame(self.__root, width=600, height=520, background='#ffffff', bd=5, relief=RIDGE)
-        self.__question_frame.grid(row=0, column=1, padx=50, pady=120)
+        self.middle_frame.grid(row=1, column=1, padx=20, pady=20)
+        self.middle_frame.grid_propagate(0)  # freeze size of frame
+        self.start_button.grid(row=1, column=0, padx=250, pady=50)
+        self.question_frame.grid(row=0, column=0, padx=50, pady=20)
+        self.question_frame.grid_propagate(0)
+
+        #  RIGHT
+
+        self.right_frame.grid(row=1, column=2, padx=20, pady=100)
+        self.count_label.grid(row=0, column=0, pady=10)
+        self.ff.grid(row=1, column=0, pady=10)
+        self.ask.grid(row=2, column=0, pady=10)
+        self.quit.grid(row=3, column=0, pady=10)
 
 
     #  initialize event loop
     def start(self):
 
-        self.__root.mainloop()
+        self.root.mainloop()
+
+    #  ask questions
+    #  if answer is incorrect  ->  break loop and ask for restart
+    def ask_questions(self):
+
+        #  remove button
+        self.start_button.grid_forget()
+
+        self.answer_frame = Frame(self.middle_frame, width=536, height=265, bg='#FFF')
+        self.answer_frame.grid(row=1, column=0, padx=23)
+        self.answer_frame.grid_propagate(0)
+
+        #  list of all questions
+        questions = []
+        for q in QA:
+            questions.append(q)
+
+        # ask 12 questions
+        x = 0
+        while x < 1:
+
+            question = random.choice(list(questions))
+            questions.remove(question)  # dont ask question again
+
+            # answers for the question
+            answers = []
+            for answer in QA[question]:
+                answers.append(QA[question][answer])
+
+            random.shuffle(answers)
+
+            print(answers)
+
+            # grid the question
+            msg = Message(self.question_frame, text=question, width=490, bg='#FFF', anchor='center', justify='center')
+            msg.config(font=('Helvetica', 15))
+            msg.grid(row=0, column=0)
+
+            # grid the answers
+            Button(self.answer_frame, text=answers[0], width=30, height=7).grid(row=0, column=0)
+            Button(self.answer_frame, text=answers[1], width=30, height=7).grid(row=0, column=1)
+            Button(self.answer_frame, text=answers[2], width=30, height=7).grid(row=1, column=0)
+            Button(self.answer_frame, text=answers[3], width=30, height=7).grid(row=1, column=1)
+
+            x += 1
 
 
+#  representation of a question
+class Question:
+
+    def __init__(self, question, correct, false_1, false_2, false_3):
+
+        self.question = question
+        self.correct = correct
+        self.false_1 = false_1
+        self.false_2 = false_2
+        self.false_3 = false_3
 
 
 #  shortcut to directory with files
@@ -71,16 +171,14 @@ PRIZES = {
     }
 
 # dict for q&a
-QUESTIONS = {}
+QA = {}
 file = open(f'{path}/questions.csv')
 
 for row in file:
     row = row.rstrip().split(';')
 
-    #   question           A       B       C       D
-    QUESTIONS[row[0]] = [row[1], row[2], row[3], row[4]]
-
-print(QUESTIONS)
+    q = Question(row[0], row[1], row[2], row[3], row[4])
+    QA[row[0]] = {'true': q.correct, 'false_1': q.false_1, 'false_2': q.false_2, 'false_3': q.false_3}
 
 def main():
 

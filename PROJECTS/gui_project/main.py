@@ -81,7 +81,7 @@ class UserInterface:
         self.count = 0
         self.count_label = Label(self.right_frame, text=f'PRIZE:\n0$', bg='#FFF')
         self.skip = Button(self.right_frame, text='SKIP', bg='#0039E6', fg='#FFF', padx=25, pady=15, bd=5, relief=RIDGE, state=DISABLED, command=self.skip_question)
-        self.quit = Button(self.right_frame, text='QUIT', bg='red', fg='white', padx=26, pady=15, bd=5, relief=RIDGE, command=self.root.quit)
+        self.quit = Button(self.right_frame, text='QUIT', bg='red', fg='#FFF', padx=26, pady=15, bd=5, relief=RIDGE, command=self.root.quit)
 
     #  initialize event loop
     def start(self):

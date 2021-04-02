@@ -1,5 +1,5 @@
 """
-COMP.CS.100 Who Wants to Be a Millionaire?
+COMP.CS.100 gui_project: Who Wants to Be a Millionaire?
 Tekijä: Joose Lohi
 Opiskelijanumero: 050800360
 

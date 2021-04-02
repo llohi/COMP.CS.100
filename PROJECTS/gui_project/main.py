@@ -52,7 +52,7 @@ class UserInterface:
 
         #  create root window with size and title
         self.root = Tk()
-        self.root.geometry('1015x710')
+        self.root.geometry('1010x640')
         self.root.title('Who Wants to Be a Millionaire?')
         #  set background
         background = Label(bg='#FFF', width=1280, height=720)
@@ -72,14 +72,15 @@ class UserInterface:
         #  set middle frame:  rules, START button, frame for question and frame for answers
         self.middle_frame = Frame(self.root, width=600, height=520, bg='#FFF', bd=5, relief=RIDGE)
         self.rules = Message(self.middle_frame, text=RULES, font=('Helvetica', 15), bg='#FFF', width=560, padx=20, pady=20)
-        self.start_button = Button(self.middle_frame, text='START', bg='green', fg='white', padx=20, pady=20, bd=5, relief=RIDGE, command=self.ask_questions)
+        self.start_button = Button(self.middle_frame, text='START', bg='green', fg='white', padx=20, pady=20, bd=5, relief=RIDGE, command=self.start_with_skip)
         self.question_frame = Frame(self.middle_frame, width=500, height=100, bg='#FFF')
         self.answer_frame = Frame(self.middle_frame, width=536, height=265, bg='#FFF')
 
-        #  set right frame:  prize count and QUIT button
+        #  set right frame:  prize count, SKIP button and QUIT button
         self.right_frame = Frame(self.root, width=100, height=520, bg='#FFF', bd=5, relief=RIDGE)
         self.count = 0
         self.count_label = Label(self.right_frame, text=f'PRIZE:\n0$', bg='#FFF')
+        self.skip = Button(self.right_frame, text='SKIP', bg='#0039E6', fg='#FFF', padx=25, pady=15, bd=5, relief=RIDGE, state=DISABLED, command=self.skip_question)
         self.quit = Button(self.right_frame, text='QUIT', bg='red', fg='white', padx=26, pady=15, bd=5, relief=RIDGE, command=self.root.quit)
 
     #  initialize event loop
@@ -94,7 +95,7 @@ class UserInterface:
         #                       HEADER
         #  LEFT FRAME        MIDDLE FRAME        RIGHT FRAME
 
-        self.header.grid(row=0, column=0, columnspan=3, pady=20)
+        self.header.grid(row=0, column=0, columnspan=3, pady=10)
 
         self.left_frame.grid(row=1, column=0, padx=20, pady=20)
         self.left_frame.grid_propagate(0)  # freeze size of frame
@@ -115,7 +116,16 @@ class UserInterface:
 
         self.right_frame.grid(row=1, column=2, padx=20, pady=100)
         self.count_label.grid(row=0, column=0, pady=10)
-        self.quit.grid(row=1, column=0, pady=10)
+        self.skip.grid(row=1, column=0, pady=10)
+        self.quit.grid(row=2, column=0, pady=10)
+
+    #  the purpose of this function is to start the
+    #  game with the skip button enabled
+    def start_with_skip(self):
+
+        #  enable skip button
+        self.skip.config(state = NORMAL)
+        self.ask_questions()
 
 
     #  ask question and create interactive buttons for answers
@@ -175,6 +185,9 @@ class UserInterface:
                 self.question_frame.grid_forget()
                 self.answer_frame.grid_forget()
 
+                #  disable skip button
+                self.skip.config(state = DISABLED)
+
                 self.count_label.config(text = f'PRIZE:\n{PRIZES[list(PRIZES)[self.count - 1]]}$')
 
                 end_label = Label(self.middle_frame, text='Congratulations, you have won 1 000 000$!\nWant to play again?', bg='#FFF', font=('Helvetica', 16))
@@ -191,6 +204,9 @@ class UserInterface:
             self.question_frame.grid_forget()
             self.answer_frame.grid_forget()
 
+            #  disable skip button
+            self.skip.config(state = DISABLED)
+
             if self.count > 0:  # player got atleast one correct answer
                 end_msg = f'Wrong answer, you won {PRIZES[list(PRIZES)[self.count - 1]]}$, good luck next time !'
 
@@ -205,6 +221,26 @@ class UserInterface:
             restart_button = Button(self.middle_frame, text='RESTART', command=lambda: self.restart(end_label, restart_button))
             restart_button.grid(row=1, column=0, pady=20)
 
+    #  skip current question and move to next one
+    def skip_question(self):
+
+        #  disable the skip button
+        self.skip.config(state = DISABLED)
+
+        #  clear frames
+        for widget in self.question_frame.winfo_children():
+            widget.grid_forget()
+
+        for widget in self.answer_frame.winfo_children():
+            widget.grid_forget()
+
+        #  remove question from list
+        self.questions.remove(self.question)
+
+        #  continue
+        self.ask_questions()
+
+
     #  function initialized if player wants to go again
     #  clear screen  ->  update class attributes  ->  start asking questions
     def restart(self, label, button):
@@ -218,8 +254,8 @@ class UserInterface:
         self.count = 0
         self.count_label.config(text = f'PRIZE:\n0$')
 
-        #  restart game
-        self.ask_questions()
+        #  restart game with one skip
+        self.start_with_skip()
 
 
 def main():

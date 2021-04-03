@@ -129,7 +129,7 @@ class UserInterface:
         self.root = Tk()
         self.root.geometry('1010x640')
         self.root.title('Who Wants to Be a Millionaire?')
-        background = Label(bg='#FFF', width = 1010, height=640).place(x=0, y=0)
+        Label(bg='#FFF', width = 1010, height=640).place(x=0, y=0)
 
         #  initialize variables used to store questions
         self.questions = []
